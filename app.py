@@ -28,13 +28,13 @@ def add_bg_from_local(img_path):
     )
 
 # Add background
-add_bg_from_local("images/download.jpg")
+add_bg_from_local("download.jpg")
 
 # Title
 st.markdown("<h1 style='text-align: center; color: pink;'>For the One Who Lights Up My World 🌟</h1>", unsafe_allow_html=True)
 
 # Display gif
-file_ = open("images/heart.gif", "rb")
+file_ = open("heart.gif", "rb")
 contents = file_.read()
 data_url = base64.b64encode(contents).decode("utf-8")
 file_.close()
@@ -56,7 +56,7 @@ st.markdown(
 )
 
 # Display a couple image
-img = Image.open("images/couple.jpg")
+img = Image.open("couple.jpg")
 st.image(img, caption="Us Together", use_column_width=True)
 
 # Button
