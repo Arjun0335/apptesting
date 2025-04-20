@@ -57,7 +57,7 @@ st.markdown(
 
 # Display a couple image
 img = Image.open("couple.jpg")
-st.image(img, caption="Us Together", use_column_width=True)
+st.image(img, caption="My love", use_column_width=True)
 
 # Button
 if st.button("Click to Feel Loved 💌"):
