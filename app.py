@@ -28,7 +28,7 @@ def add_bg_from_local(img_path):
     )
 
 # Add background
-add_bg_from_local("download.jpg")
+add_bg_from_local("download.jpeg")
 
 # Title
 st.markdown("<h1 style='text-align: center; color: pink;'>For the One Who Lights Up My World 🌟</h1>", unsafe_allow_html=True)
