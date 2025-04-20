@@ -1,3 +1,1 @@
-streamlit
-PIL
-base64
+streamlit pillow
