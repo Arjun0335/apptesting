@@ -2,14 +2,13 @@ import streamlit as st
 from PIL import Image
 import base64
 
-# Page configuration
+# Page Config
 st.set_page_config(
     page_title="For My Love 💖",
-    layout="centered",
-    initial_sidebar_state="auto"
+    layout="centered"
 )
 
-# Function to add background image
+# Add Background Function
 def add_bg_from_local(img_path):
     with open(img_path, "rb") as f:
         encoded_img = base64.b64encode(f.read()).decode()
@@ -56,13 +55,13 @@ def add_bg_from_local(img_path):
         unsafe_allow_html=True
     )
 
-# Apply background
+# Set background
 add_bg_from_local("download.jpeg")
 
 # Title
 st.markdown("<h1 style='text-align: center;'>For the One Who Lights Up My World 🌟</h1>", unsafe_allow_html=True)
 
-# Heart animation (GIF)
+# Heart GIF
 with open("heart.gif", "rb") as file_:
     contents = file_.read()
     data_url = base64.b64encode(contents).decode("utf-8")
@@ -71,7 +70,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# Loving message
+# Main message
 st.markdown(
     """
     <div class='custom-text' style='text-align: center;'>
@@ -83,14 +82,40 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Couple image
+# Single couple image
+st.markdown("### 💑 Our Beautiful Moment")
 img = Image.open("couple.jpg")
-st.image(img, caption="My love 💑", use_column_width=True)
+st.image(img, caption="Together Forever 💕", use_column_width=True)
 
-# Interactive love button
-with st.container():
-    st.markdown("<div class='love-button' style='text-align: center;'>", unsafe_allow_html=True)
-    if st.button("Click to Feel Loved 💌"):
-        st.balloons()
-        st.success("You're the most amazing person in the universe! 💘")
-    st.markdown("</div>", unsafe_allow_html=True)
+# Reply input
+st.markdown("### 💬 Leave a Sweet Reply")
+reply = st.text_input("Type your message here 💌:")
+if reply:
+    st.success(f"Message received: '{reply}' 💝")
+
+# Love counter
+st.markdown("### ❤️ Spread Some Love!")
+if "love_count" not in st.session_state:
+    st.session_state.love_count = 0
+
+if st.button("Send a Hug 🤗"):
+    st.session_state.love_count += 1
+    st.toast("Hug sent! 💞")
+
+st.write(f"Total hugs sent: **{st.session_state.love_count}**")
+
+# Surprise confetti
+st.markdown("### 🎉 Feeling Happy?")
+if st.button("Click for a Surprise ✨"):
+    st.balloons()
+    st.toast("You bring sparkle to my life! 🌟")
+
+# Final message
+st.markdown(
+    """
+    <div style='text-align: center; font-size: 18px; color: white; margin-top: 30px;'>
+        Thank you for being YOU. This is just a small gift of love, made with all my heart. 💖
+    </div>
+    """,
+    unsafe_allow_html=True
+)
