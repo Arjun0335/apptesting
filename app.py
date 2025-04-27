@@ -92,7 +92,7 @@ st.markdown(
 )
 
 # Couple Image
-st.markdown("### 💑 Our Beautiful Memory")
+st.markdown("### 💑 Your most beautiful pic")
 img = Image.open("couple.jpg")
 st.image(img, caption="Together Forever 💕", use_column_width=True)
 
