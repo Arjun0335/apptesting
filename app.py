@@ -144,7 +144,7 @@ st.markdown(
     """
     <div style='text-align: center; font-size: 22px; color: white; margin-top: 50px;'>
         You are my favorite person, my today and all of my tomorrows. 💖<br><br>
-        <i>Made with endless love 💕 using Streamlit.</i>
+        <i>Made with endless love 💕 using my love for youuu my love.</i>
     </div>
     """,
     unsafe_allow_html=True
