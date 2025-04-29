@@ -7,7 +7,7 @@ st.set_page_config(page_title="Just for You 💌", page_icon="💖")
 st.title("💌 A Special Message for You")
 
 # Define the correct password
-correct_password = "231106"  # example: 13th Sept (or nickname)
+correct_password = "241106"  # example: 13th Sept (or nickname)
 
 # Password input
 password = st.text_input("Enter the special date or nickname:", type="password")
