@@ -49,7 +49,7 @@ if password == correct_password:
     if st.button("Reveal a hidden promise"):
         st.markdown("### 💍 Future Promise")
         st.write("This is where I’ll post our 1st official date pic and all the moments after... 💑📸")
-        st.image("couple.jpeg", caption="Youuu my love", use_column_width=True)
+        st.image("couple.jpg", caption="Youuu my love", use_column_width=True)
 
 else:
     st.warning("Enter the correct password to unlock the love letter 💘")
