@@ -17,7 +17,6 @@ def load_lottieurl(url):
 with st.container():
     st.title("❤️ For My Love Vanii ❤️")
     st.subheader("A simple website to tell you how much you are important for me.")
-    st_lottie(love_animation, height=300)
 
 # Love note section
 with st.container():
