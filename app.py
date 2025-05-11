@@ -1,59 +1,68 @@
 import streamlit as st
+from streamlit_lottie import st_lottie
+import requests
+import time
 
-# Set page config
-st.set_page_config(page_title="Just for You 💌", page_icon="💖")
+# Page config
+st.set_page_config(page_title="For My Love Vaniii ❤️", page_icon="💌", layout="wide")
 
-# Title
-st.title("💌 A Special Message for You")
+# Load Lottie animation
+def load_lottieurl(url):
+    r = requests.get(url)
+    if r.status_code != 200:
+        return None
+    return r.json()
 
-# Define the correct password
-correct_password = "241106"  # example: 13th Sept (or nickname)
+love_animation = load_lottieurl("https://assets6.lottiefiles.com/packages/lf20_kxsd2ytq.json")
 
-# Password input
-password = st.text_input("Enter the special date or nickname:", type="password")
+# Main layout
+with st.container():
+    st.title("❤️ For My Love A ❤️")
+    st.subheader("A simple website to tell you how much you are important for me.")
+    st_lottie(love_animation, height=300)
 
-if password == correct_password:
-    st.success("Access granted 💖")
+# Love note section
+with st.container():
+    st.header("💌 My Message to You")
+    love_letter = """
+    Dear A,
 
-    # --- Love Letter ---
-    st.header("💌 My Love Letter to You")
-    st.write("""
-    Dear Love,
+    Every day with you is a beautiful memory.  
+    Your smile lights up my world and your presence brings peace.  
+    This little site is just a tiny effort to express how much I love and cherish you.
 
-    Every day with you is a page in the most beautiful story I've ever known. 
-    From our first smile to every shared dream, you've made my life extraordinary.
+    Forever yours,  
+    Arjun 💖
+    """
+    st.markdown(f"<div style='font-size:20px; line-height:1.7;'>{love_letter}</div>", unsafe_allow_html=True)
 
-    I love you more with every heartbeat. 💖
+# Display default photo
+st.header("📸 your the most beautiful photo")
+st.image("couple.jpeg", 
+         caption="Every moment with you is magic 💖", use_column_width=True)
 
-    Forever yours,
-    [Your Name]
-    """)
-
-    # --- Reasons I Love You ---
-    st.header("🌹 Reasons I Love You")
-    reasons = {
-        "Your smile": "It lights up even my darkest days.",
-        "Your kindness": "You treat everyone with so much warmth and respect.",
-        "Your laugh": "It's contagious and makes my day better every time.",
-        "Your support": "You've always believed in me.",
-        "Your quirks": "They make you even more unique and special.",
+# Timeline of special moments
+with st.container():
+    st.header("🕰️ Our Special Timeline")
+    events = {
+        "Met You": "✨ The best day of my life!",
+        "First Meet": "💫 Butterflies and heartbeats!",
+        "Second meet": "📸 The memory that still makes me smile!",
+        "Still in Love": "💖 Every moment, every day."
     }
+    for event, desc in events.items():
+        st.markdown(f"**{event}:** {desc}")
+        time.sleep(0.5)
 
-    for reason, detail in reasons.items():
-        with st.expander(reason):
-            st.write(detail)
-
-    # --- Hidden Future Promise ---
-    st.header("🔒 A Little Secret...")
-
-    if st.button("Reveal a hidden promise"):
-        st.markdown("### 💍 Future Promise")
-        st.write("This is where I’ll post our official date pic and all the moments after... 💑📸")
-        st.image("couple.jpg", caption="Imagine us here...", use_column_width=True)
-
-else:
-    st.warning("Enter the correct password to unlock the love letter 💘")
+# Secret message / contact form
+st.header("💬 Want to leave me a secret message?")
+with st.form(key="contact_form"):
+    name = st.text_input("Your name")
+    msg = st.text_area("Your message to me")
+    submit = st.form_submit_button("Send 💌")
+    if submit:
+        st.success("Thank you for your message! 💕")
 
 # Footer
 st.markdown("---")
-st.markdown("Made with ❤️ using Streamlit")
+st.markdown("<center><i>Made with love by Arjun for A 💘</i></center>", unsafe_allow_html=True)
