@@ -25,7 +25,7 @@ with st.container():
 with st.container():
     st.header("💌 My Message to You")
     love_letter = """
-    Dear A,
+    Dear Vaniiii,
 
     Every day with you is a beautiful memory.  
     Your smile lights up my world and your presence brings peace.  
