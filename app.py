@@ -17,7 +17,7 @@ love_animation = load_lottieurl("https://assets6.lottiefiles.com/packages/lf20_k
 
 # Main layout
 with st.container():
-    st.title("❤️ For My Love A ❤️")
+    st.title("❤️ For My Love Vanii ❤️")
     st.subheader("A simple website to tell you how much you are important for me.")
     st_lottie(love_animation, height=300)
 
@@ -65,4 +65,4 @@ with st.form(key="contact_form"):
 
 # Footer
 st.markdown("---")
-st.markdown("<center><i>Made with love by Arjun for A 💘</i></center>", unsafe_allow_html=True)
+st.markdown("<center><i>Made with love by Arjun for Vaniiii 💘</i></center>", unsafe_allow_html=True)
