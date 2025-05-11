@@ -38,7 +38,7 @@ with st.container():
 
 # Display default photo
 st.header("📸 your the most beautiful photo")
-st.image("couple.jpeg", 
+st.image("couple.jpg", 
          caption="Every moment with you is magic 💖", use_column_width=True)
 
 # Timeline of special moments
