@@ -1,65 +1,73 @@
 import streamlit as st
-from streamlit_lottie import st_lottie
-import requests
-import time
+import yagmail
 
-# Page config
-st.set_page_config(page_title="For My Love Vaniii ❤️", page_icon="💌", layout="wide")
+# --- Configuration ---
+USER_CREDENTIALS = {
+    "Aruu": "241106",
+    "admin": "admin123"
+}
 
-# Load Lottie animation
-def load_lottieurl(url):
-    r = requests.get(url)
-    if r.status_code != 200:
-        return None
-    return r.json()
+RECEIVER_EMAIL = "arjungupta0335@gmail.com"       # Your receiving email
+SENDER_EMAIL = "arjungupta0335@gmail.com"              # Your sending Gmail
+SENDER_PASSWORD = "Arj7678#181"              # App password from Google
 
-# Main layout
-with st.container():
-    st.title("❤️ For My Love Vanii ❤️")
-    st.subheader("A simple website to tell you how much you are important for me.")
+def send_email(subject, content):
+    try:
+        yag = yagmail.SMTP(SENDER_EMAIL, SENDER_PASSWORD)
+        yag.send(to=RECEIVER_EMAIL, subject=subject, contents=content)
+        return True
+    except Exception as e:
+        return str(e)
 
-# Love note section
-with st.container():
-    st.header("💌 My Message to You")
-    love_letter = """
-    Dear Vaniiii,
+# --- Login Page ---
+def login_page():
+    st.title("🔐 Grievance Portal Login")
+    with st.form("login_form", clear_on_submit=True):
+        username = st.text_input("Username")
+        password = st.text_input("Password", type="password")
+        login_btn = st.form_submit_button("Login")
+        if login_btn:
+            if username in USER_CREDENTIALS and USER_CREDENTIALS[username] == password:
+                st.session_state.logged_in = True
+                st.session_state.user = username
+                st.success("Login successful!")
+                st.experimental_rerun()
+            else:
+                st.error("Invalid username or password")
 
-    Every day with you is a beautiful memory.  
-    Your smile lights up my world and your presence brings peace.  
-    This little site is just a tiny effort to express how much I love and cherish you.
+# --- Grievance Submission Page ---
+def grievance_page():
+    st.title("📨 Submit Your Grievance")
+    st.write(f"Welcome, **{st.session_state.user}**!")
 
-    Forever yours,  
-    Arjun 💖
-    """
-    st.markdown(f"<div style='font-size:20px; line-height:1.7;'>{love_letter}</div>", unsafe_allow_html=True)
+    with st.form("grievance_form", clear_on_submit=True):
+        mood = st.selectbox("How are you feeling?", ["Angry", "Sad", "Sorry", "Happy", "Grateful"])
+        message = st.text_area("Your grievance or message:")
+        submitted = st.form_submit_button("Press Enter to Submit")
+        
+        if submitted:
+            if message.strip() == "":
+                st.warning("Message cannot be empty.")
+            else:
+                email_subject = f"Grievance from {st.session_state.user} ({mood})"
+                email_body = f"User: {st.session_state.user}\nMood: {mood}\nMessage:\n{message}"
+                status = send_email(email_subject, email_body)
+                if status == True:
+                    st.success("✅ Message sent directly to Me hehe!")
+                else:
+                    st.error(f"❌ Failed to send email: {status}")
+    
+    if st.button("Logout"):
+        st.session_state.logged_in = False
+        st.experimental_rerun()
 
-# Display default photo
-st.header("📸 your the most beautiful photo")
-st.image("couple.jpg", 
-         caption="Every moment with you is magic 💖", use_column_width=True)
+# --- Main Flow ---
+st.set_page_config(page_title="Grievance Portal", page_icon="📩")
 
-# Timeline of special moments
-with st.container():
-    st.header("🕰️ Our Special Timeline")
-    events = {
-        "Met You": "✨ The best day of my life!",
-        "First Meet": "💫 Butterflies and heartbeats!",
-        "Second meet": "📸 The memory that still makes me smile!",
-        "Still in Love": "💖 Every moment, every day."
-    }
-    for event, desc in events.items():
-        st.markdown(f"**{event}:** {desc}")
-        time.sleep(0.5)
+if "logged_in" not in st.session_state:
+    st.session_state.logged_in = False
 
-# Secret message / contact form
-st.header("💬 Want to leave me a secret message?")
-with st.form(key="contact_form"):
-    name = st.text_input("Your name")
-    msg = st.text_area("Your message to me")
-    submit = st.form_submit_button("Send 💌")
-    if submit:
-        st.success("Thank you for your message! 💕")
-
-# Footer
-st.markdown("---")
-st.markdown("<center><i>Made with love by Arjun for Vaniiii 💘</i></center>", unsafe_allow_html=True)
+if not st.session_state.logged_in:
+    login_page()
+else:
+    grievance_page()
