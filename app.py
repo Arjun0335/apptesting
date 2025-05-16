@@ -66,7 +66,7 @@ def grievance_page():
         st.rerun()
 
 # Only allow Aruu to download the Excel file
-if st.session_state.user == "Aru" and os.path.exists("grievances.xlsx"):
+if "user" in st.session_state and st.session_state.user == "Aru" and os.path.exists("grievances.xlsx"):
     with open("grievances.xlsx", "rb") as f:
         st.download_button("📥 Download Excel", f, file_name="grievances.xlsx")
 
