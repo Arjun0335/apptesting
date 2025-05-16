@@ -50,7 +50,7 @@ def grievance_page():
     st.write(f"Welcome, **{st.session_state.user}**!")
 
     with st.form("grievance_form", clear_on_submit=True):
-        mood = st.selectbox("How are you feeling?", ["😠 Angry", "😢 Sad", "😐 Neutral", "😊 Happy", "😇 Grateful"])
+        mood = st.selectbox("How are you feeling?", ["Angry", "Sad", "Sorry", "Happy", "Super Happy"])
         message = st.text_area("Your grievance or message:")
         submitted = st.form_submit_button("Press Enter to Submit")
 
