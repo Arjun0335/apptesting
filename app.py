@@ -5,8 +5,8 @@ import openpyxl
 
 # --- Configuration ---
 USER_CREDENTIALS = {
-    "Aruu": "241106",
-    "admin": "admin123"
+    "Vanii": "241106",
+    "Aru": "123"
 }
 
 # --- Function to Save Grievance to Excel ---
@@ -65,6 +65,10 @@ def grievance_page():
         st.session_state.logged_in = False
         st.rerun()
 
+# Only allow Aruu to download the Excel file
+if st.session_state.user == "Aru" and os.path.exists("grievances.xlsx"):
+    with open("grievances.xlsx", "rb") as f:
+        st.download_button("📥 Download Excel", f, file_name="grievances.xlsx")
 
 # --- Main Flow ---
 st.set_page_config(page_title="Grievance Portal", page_icon="📩")
