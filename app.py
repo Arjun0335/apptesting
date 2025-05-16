@@ -1,5 +1,6 @@
 import streamlit as st
-import yagmail
+import pandas as pd
+import os
 
 # --- Configuration ---
 USER_CREDENTIALS = {
@@ -7,17 +8,24 @@ USER_CREDENTIALS = {
     "admin": "admin123"
 }
 
-RECEIVER_EMAIL = "arjungupta0335@gmail.com"       # Your receiving email
-SENDER_EMAIL = "arjungupta0335@gmail.com"              # Your sending Gmail
-SENDER_PASSWORD = "Arj7678#181"              # App password from Google
+# --- Function to Save Grievance to Excel ---
+def save_to_excel(username, mood, message):
+    data = {
+        "Username": [username],
+        "Mood": [mood],
+        "Message": [message]
+    }
 
-def send_email(subject, content):
-    try:
-        yag = yagmail.SMTP(SENDER_EMAIL, SENDER_PASSWORD)
-        yag.send(to=RECEIVER_EMAIL, subject=subject, contents=content)
-        return True
-    except Exception as e:
-        return str(e)
+    df_new = pd.DataFrame(data)
+    file_path = "grievances.xlsx"
+
+    if os.path.exists(file_path):
+        df_existing = pd.read_excel(file_path)
+        df_combined = pd.concat([df_existing, df_new], ignore_index=True)
+    else:
+        df_combined = df_new
+
+    df_combined.to_excel(file_path, index=False)
 
 # --- Login Page ---
 def login_page():
@@ -41,25 +49,21 @@ def grievance_page():
     st.write(f"Welcome, **{st.session_state.user}**!")
 
     with st.form("grievance_form", clear_on_submit=True):
-        mood = st.selectbox("How are you feeling?", ["Angry", "Sad", "Sorry", "Happy", "Grateful"])
+        mood = st.selectbox("How are you feeling?", ["😠 Angry", "😢 Sad", "😐 Neutral", "😊 Happy", "😇 Grateful"])
         message = st.text_area("Your grievance or message:")
         submitted = st.form_submit_button("Press Enter to Submit")
-        
+
         if submitted:
             if message.strip() == "":
                 st.warning("Message cannot be empty.")
             else:
-                email_subject = f"Grievance from {st.session_state.user} ({mood})"
-                email_body = f"User: {st.session_state.user}\nMood: {mood}\nMessage:\n{message}"
-                status = send_email(email_subject, email_body)
-                if status == True:
-                    st.success("✅ Message sent directly to Me hehe!")
-                else:
-                    st.error(f"❌ Failed to send email: {status}")
-    
+                save_to_excel(st.session_state.user, mood, message)
+                st.success("✅ Message sent!")
+
     if st.button("Logout"):
         st.session_state.logged_in = False
-        st.experimental_rerun()
+        st.rerun()
+
 
 # --- Main Flow ---
 st.set_page_config(page_title="Grievance Portal", page_icon="📩")
