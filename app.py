@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 import os
 import openpyxl
-
+st.set_page_config(page_title="Grievance Portal", page_icon="📩")
 # --- Configuration ---
 USER_CREDENTIALS = {
     "Vanii": "241106",
@@ -71,7 +71,6 @@ if st.session_state.user == "Aru" and os.path.exists("grievances.xlsx"):
         st.download_button("📥 Download Excel", f, file_name="grievances.xlsx")
 
 # --- Main Flow ---
-st.set_page_config(page_title="Grievance Portal", page_icon="📩")
 
 if "logged_in" not in st.session_state:
     st.session_state.logged_in = False
