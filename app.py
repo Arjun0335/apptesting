@@ -12,11 +12,16 @@ if 'authenticated' not in st.session_state:
 if not st.session_state.authenticated:
     st.title("💖 Welcome to Our Romantic Wishlist 💑")
     password = st.text_input("Enter the secret password 🔐", type="password")
+    
     if password == PASSWORD:
         st.session_state.authenticated = True
-        st.experimental_rerun()
+        st.experimental_rerun()  # rerun to reload the authenticated session
+    elif password != "":
+        st.error("Wrong password! Please try again.")
+        st.stop()  # stop only after showing error
     else:
-        st.stop()
+        st.stop()  # stop waiting for input
+
 
 # ---- Romantic Default Wishlist ----
 default_items = [
