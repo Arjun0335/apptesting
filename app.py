@@ -1,29 +1,25 @@
 import streamlit as st
+import json
+import os
 
-# ---- Romantic Theme Config ----
+# ---- Config ----
 st.set_page_config(page_title="Romantic Wishlist 💖", page_icon="💘", layout="centered")
+DATA_FILE = "wishlist.json"
+PASSWORD = "241106"
 
-# ---- Password protection ----
-PASSWORD = "241106"  # your secret password
-
-if 'authenticated' not in st.session_state:
-    st.session_state.authenticated = False
-
-if not st.session_state.authenticated:
-    st.title("💖 Welcome to Our Romantic Wishlist 💑")
-    password = st.text_input("Enter the secret password 🔐", type="password")
-    
-    if password == PASSWORD:
-        st.session_state.authenticated = True
-        st.success("Password correct! Loading wishlist...")
-        st.stop()  # Stop and continue on next rerun
-    elif password != "":
-        st.error("Wrong password! Please try again.")
-        st.stop()
+# ---- Load/Save Data ----
+def load_wishlist():
+    if os.path.exists(DATA_FILE):
+        with open(DATA_FILE, "r") as f:
+            return json.load(f)
     else:
-        st.stop()
+        return default_items.copy()
 
-# ---- Romantic Default Wishlist ----
+def save_wishlist(data):
+    with open(DATA_FILE, "w") as f:
+        json.dump(data, f)
+
+# ---- Default Romantic Items ----
 default_items = [
     "Chandni Chowk ki tikki and ice cream",
     "Ghumna and baatein krna",
@@ -44,43 +40,62 @@ default_items = [
     "20th June her feet was in pain and mood swings also"
 ]
 
-if 'wishlist' not in st.session_state:
-    st.session_state.wishlist = default_items.copy()
+# ---- Password Authentication ----
+if 'authenticated' not in st.session_state:
+    st.session_state.authenticated = False
 
-# ---- App Title ----
+if not st.session_state.authenticated:
+    st.title("💖 Welcome to Our Romantic Wishlist 💑")
+    password = st.text_input("Enter the secret password 🔐", type="password")
+    if password == PASSWORD:
+        st.session_state.authenticated = True
+        st.success("Welcome! Loading your wishlist...")
+        st.stop()
+    elif password != "":
+        st.error("Wrong password! Try again.")
+        st.stop()
+    else:
+        st.stop()
+
+# ---- Main Logic ----
+wishlist = load_wishlist()
 st.markdown("<h2 style='color: pink;'>💝 Our Dream Wishlist 💝</h2>", unsafe_allow_html=True)
 
-# ---- Add Item Form ----
+# ---- Add Item ----
 with st.form("add_item"):
-    new_item = st.text_input("Add something romantic to the wishlist 💌", placeholder="E.g. Candlelight Dinner 🕯️")
-    submitted = st.form_submit_button("Add to Wishlist 💘")
-    if submitted and new_item:
-        st.session_state.wishlist.append(new_item)
+    new_item = st.text_input("Add something romantic 💌", placeholder="E.g. Candlelight Dinner 🕯️")
+    if st.form_submit_button("Add to Wishlist 💘") and new_item:
+        wishlist.append(new_item)
+        save_wishlist(wishlist)
         st.success("Added to wishlist!")
+        st.experimental_rerun()
 
-# ---- Display Wishlist ----
-if st.session_state.wishlist:
-    st.markdown("---")
+# ---- View/Edit/Delete Items ----
+if wishlist:
     st.markdown("### 💞 Your Wishlist Items:")
-    delete_index = None  # Safe deletion tracking
+    delete_index = None
 
-    for i, item in enumerate(st.session_state.wishlist):
+    for i, item in enumerate(wishlist):
         cols = st.columns([5, 1, 1])
         with cols[0]:
             edited = st.text_input(f"Item {i+1}", value=item, key=f"item_{i}")
         with cols[1]:
             if st.button("💘 Edit", key=f"edit_{i}"):
-                st.session_state.wishlist[i] = edited
+                wishlist[i] = edited
+                save_wishlist(wishlist)
                 st.success("Item updated!")
+                st.experimental_rerun()
         with cols[2]:
             if st.button("❌ Delete", key=f"delete_{i}"):
                 delete_index = i
 
     if delete_index is not None:
-        st.session_state.wishlist.pop(delete_index)
+        wishlist.pop(delete_index)
+        save_wishlist(wishlist)
+        st.success("Item deleted!")
         st.experimental_rerun()
 else:
-    st.info("Your wishlist is empty. Add your first dream 💭!")
+    st.info("No items yet! Add your first wish 💭")
 
 # ---- Romantic Styling ----
 st.markdown("""
