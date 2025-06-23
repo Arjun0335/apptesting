@@ -67,7 +67,7 @@ with st.form("add_item"):
     new_item = st.text_input("Add something romantic to the wishlist 💌", placeholder="E.g. Candlelight Dinner 🕯️")
     if st.form_submit_button("Add to Wishlist 💘") and new_item:
         wishlist.append(new_item)
-        save_wishlist(wishlist)
+        #save_wishlist(wishlist)
         st.success("Added to wishlist!")
         st.experimental_rerun()
 
@@ -92,7 +92,7 @@ if wishlist:
 
     if delete_index is not None:
         wishlist.pop(delete_index)
-        save_wishlist(wishlist)
+        #save_wishlist(wishlist)
         st.success("Item deleted!")
         st.experimental_rerun()
 else:
