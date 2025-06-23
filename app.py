@@ -7,19 +7,18 @@ st.set_page_config(page_title="Romantic Wishlist 💖", page_icon="💘", layout
 DATA_FILE = "wishlist.json"
 PASSWORD = "241106"
 
-# ---- Load/Save Data ----
+# ---- Load and Save Functions ----
 def load_wishlist():
     if os.path.exists(DATA_FILE):
         with open(DATA_FILE, "r") as f:
             return json.load(f)
-    else:
-        return default_items.copy()
+    return default_items.copy()
 
-def save_wishlist(data):
+def save_wishlist(wishlist):
     with open(DATA_FILE, "w") as f:
-        json.dump(data, f)
+        json.dump(wishlist, f)
 
-# ---- Default Romantic Items ----
+# ---- Romantic Default Wishlist ----
 default_items = [
     "Chandni Chowk ki tikki and ice cream",
     "Ghumna and baatein krna",
@@ -40,7 +39,7 @@ default_items = [
     "20th June her feet was in pain and mood swings also"
 ]
 
-# ---- Password Authentication ----
+# ---- Authentication ----
 if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
 
@@ -57,20 +56,22 @@ if not st.session_state.authenticated:
     else:
         st.stop()
 
-# ---- Main Logic ----
+# ---- Load current wishlist ----
 wishlist = load_wishlist()
+
+# ---- App Title ----
 st.markdown("<h2 style='color: pink;'>💝 Our Dream Wishlist 💝</h2>", unsafe_allow_html=True)
 
-# ---- Add Item ----
+# ---- Add New Item ----
 with st.form("add_item"):
-    new_item = st.text_input("Add something romantic 💌", placeholder="E.g. Candlelight Dinner 🕯️")
+    new_item = st.text_input("Add something romantic to the wishlist 💌", placeholder="E.g. Candlelight Dinner 🕯️")
     if st.form_submit_button("Add to Wishlist 💘") and new_item:
         wishlist.append(new_item)
         save_wishlist(wishlist)
         st.success("Added to wishlist!")
         st.experimental_rerun()
 
-# ---- View/Edit/Delete Items ----
+# ---- Display Wishlist ----
 if wishlist:
     st.markdown("### 💞 Your Wishlist Items:")
     delete_index = None
@@ -78,15 +79,15 @@ if wishlist:
     for i, item in enumerate(wishlist):
         cols = st.columns([5, 1, 1])
         with cols[0]:
-            edited = st.text_input(f"Item {i+1}", value=item, key=f"item_{i}")
+            edited = st.text_input(f"Item {i+1}", value=item, key=f"edit_input_{i}")
         with cols[1]:
-            if st.button("💘 Edit", key=f"edit_{i}"):
+            if st.button("💘 Edit", key=f"edit_btn_{i}"):
                 wishlist[i] = edited
                 save_wishlist(wishlist)
                 st.success("Item updated!")
                 st.experimental_rerun()
         with cols[2]:
-            if st.button("❌ Delete", key=f"delete_{i}"):
+            if st.button("❌ Delete", key=f"delete_btn_{i}"):
                 delete_index = i
 
     if delete_index is not None:
@@ -95,9 +96,9 @@ if wishlist:
         st.success("Item deleted!")
         st.experimental_rerun()
 else:
-    st.info("No items yet! Add your first wish 💭")
+    st.info("Your wishlist is empty. Add your first romantic plan 💭!")
 
-# ---- Romantic Styling ----
+# ---- Styling ----
 st.markdown("""
 <style>
     .stTextInput > div > div > input {
