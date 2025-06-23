@@ -75,6 +75,7 @@ if st.session_state.wishlist:
             if st.button("❌ Delete", key=f"delete_{i}"):
                 st.session_state.wishlist.pop(i)
                 st.experimental_rerun()
+
 else:
     st.info("Your wishlist is empty. Add your first dream 💭!")
 
