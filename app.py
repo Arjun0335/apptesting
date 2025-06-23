@@ -1,83 +1,94 @@
-'''
 import streamlit as st
-import pandas as pd
-import os
-import openpyxl
-st.set_page_config(page_title="Grievance Portal", page_icon="📩")
-# --- Configuration ---
-USER_CREDENTIALS = {
-    "Vanii": "241106",
-    "Aru": "123"
-}
 
-# --- Function to Save Grievance to Excel ---
-def save_to_excel(username, mood, message):
-    data = {
-        "Username": [username],
-        "Mood": [mood],
-        "Message": [message]
-    }
+# ---- Romantic Theme Config ----
+st.set_page_config(page_title="Romantic Wishlist 💖", page_icon="💘", layout="centered")
 
-    df_new = pd.DataFrame(data)
-    file_path = "grievances.xlsx"
+# ---- Password protection ----
+PASSWORD = "241106"  # You can change this to your secret password
 
-    if os.path.exists(file_path):
-        df_existing = pd.read_excel(file_path)
-        df_combined = pd.concat([df_existing, df_new], ignore_index=True)
+if 'authenticated' not in st.session_state:
+    st.session_state.authenticated = False
+
+if not st.session_state.authenticated:
+    st.title("💖 Welcome to Our Romantic Wishlist 💑")
+    password = st.text_input("Enter the secret password 🔐", type="password")
+    if password == PASSWORD:
+        st.session_state.authenticated = True
+        st.experimental_rerun()
     else:
-        df_combined = df_new
+        st.stop()
 
-    df_combined.to_excel(file_path, index=False)
+# ---- Romantic Default Wishlist ----
+default_items = [
+    "Chandni Chowk ki tikki and ice cream",
+    "Ghumna and baatein krna",
+    "Love to make me irritate",
+    "Handle her mood swings",
+    "Make her happy and calm",
+    "Love her indefinitely",
+    "Feets touch krna",
+    "Give my shoes to her if her feets pain from heels",
+    "My job to protect her from other boys",
+    "Always listen her",
+    "She like me for my efforts",
+    "Last periods date - 3rd June 2025",
+    "Call her everyday - only 2 left out of 5",
+    "Loves blue lays, chocolate ice cream, Natraj ki tikki, coke and momos bhi",
+    "Never have to leave alone when overthinking or when mood off.",
+    "Go to gym and become her cute gym guy and learn bike also",
+    "20th June her feet was in pain and mood swings also"
+]
 
-# --- Login Page ---
-def login_page():
-    st.title("🔐 Grievance Portal Login")
-    with st.form("login_form", clear_on_submit=True):
-        username = st.text_input("Username")
-        password = st.text_input("Password", type="password")
-        login_btn = st.form_submit_button("Login")
-        if login_btn:
-            if username in USER_CREDENTIALS and USER_CREDENTIALS[username] == password:
-                st.session_state.logged_in = True
-                st.session_state.user = username
-                st.success("Login successful!")
-                st.rerun()
-            else:
-                st.error("Invalid username or password")
+# ---- Initialize Wishlist ----
+if 'wishlist' not in st.session_state:
+    st.session_state.wishlist = default_items.copy()
 
-# --- Grievance Submission Page ---
-def grievance_page():
-    st.title("📨 Submit Your Grievance")
-    st.write(f"Welcome, **{st.session_state.user}**!")
+# ---- App Title ----
+st.markdown("<h2 style='color: pink;'>💝 Our Dream Wishlist 💝</h2>", unsafe_allow_html=True)
 
-    with st.form("grievance_form", clear_on_submit=True):
-        mood = st.selectbox("How are you feeling?", ["Angry", "Sad", "Sorry", "Happy", "Super Happy"])
-        message = st.text_area("Your grievance or message:")
-        submitted = st.form_submit_button("Press Enter to Submit")
+# ---- Add Item Form ----
+with st.form("add_item"):
+    new_item = st.text_input("What do you want to add to our wishlist?", placeholder="E.g. Paris Trip 🗼, Candlelight Dinner 🕯️")
+    submitted = st.form_submit_button("Add to Wishlist 💌")
+    if submitted and new_item:
+        st.session_state.wishlist.append(new_item)
+        st.success("Added to wishlist!")
 
-        if submitted:
-            if message.strip() == "":
-                st.warning("Message cannot be empty.")
-            else:
-                save_to_excel(st.session_state.user, mood, message)
-                st.success("✅ Message sent!")
-
-    if st.button("Logout"):
-        st.session_state.logged_in = False
-        st.rerun()
-
-# Only allow Aruu to download the Excel file
-if "user" in st.session_state and st.session_state.user == "Aru" and os.path.exists("grievances.xlsx"):
-    with open("grievances.xlsx", "rb") as f:
-        st.download_button("📥 Download Excel", f, file_name="grievances.xlsx")
-
-# --- Main Flow ---
-
-if "logged_in" not in st.session_state:
-    st.session_state.logged_in = False
-
-if not st.session_state.logged_in:
-    login_page()
+# ---- Display Wishlist ----
+if st.session_state.wishlist:
+    st.markdown("---")
+    st.markdown("### 💞 Your Wishlist Items:")
+    for i, item in enumerate(st.session_state.wishlist):
+        cols = st.columns([5, 1, 1])
+        with cols[0]:
+            edited = st.text_input(f"Item {i+1}", value=item, key=f"item_{i}")
+        with cols[1]:
+            if st.button("💘 Edit", key=f"edit_{i}"):
+                st.session_state.wishlist[i] = edited
+                st.success("Item updated!")
+        with cols[2]:
+            if st.button("❌ Delete", key=f"delete_{i}"):
+                st.session_state.wishlist.pop(i)
+                st.experimental_rerun()
 else:
-    grievance_page()
-'''
+    st.info("Your wishlist is empty. Add your first dream 💭!")
+
+# ---- Romantic Styling ----
+st.markdown("""
+<style>
+    .stTextInput > div > div > input {
+        background-color: #ffe6f0;
+        color: #cc0066;
+        font-weight: bold;
+    }
+    div.stButton > button {
+        background-color: #ff99cc;
+        color: white;
+        border-radius: 10px;
+        font-size: 18px;
+    }
+    .st-bb {
+        color: #ff66b2 !important;
+    }
+</style>
+""", unsafe_allow_html=True)
