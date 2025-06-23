@@ -4,7 +4,7 @@ import streamlit as st
 st.set_page_config(page_title="Romantic Wishlist 💖", page_icon="💘", layout="centered")
 
 # ---- Password protection ----
-PASSWORD = "241106"  # You can change this to your secret password
+PASSWORD = "241106"  # your secret password
 
 if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
@@ -15,13 +15,13 @@ if not st.session_state.authenticated:
     
     if password == PASSWORD:
         st.session_state.authenticated = True
-        st.experimental_rerun()  # rerun to reload the authenticated session
+        st.success("Password correct! Loading wishlist...")
+        st.stop()  # Stop and continue on next rerun
     elif password != "":
         st.error("Wrong password! Please try again.")
-        st.stop()  # stop only after showing error
+        st.stop()
     else:
-        st.stop()  # stop waiting for input
-
+        st.stop()
 
 # ---- Romantic Default Wishlist ----
 default_items = [
@@ -44,7 +44,6 @@ default_items = [
     "20th June her feet was in pain and mood swings also"
 ]
 
-# ---- Initialize Wishlist ----
 if 'wishlist' not in st.session_state:
     st.session_state.wishlist = default_items.copy()
 
@@ -53,8 +52,8 @@ st.markdown("<h2 style='color: pink;'>💝 Our Dream Wishlist 💝</h2>", unsafe
 
 # ---- Add Item Form ----
 with st.form("add_item"):
-    new_item = st.text_input("What do you want to add to our wishlist?", placeholder="E.g. Paris Trip 🗼, Candlelight Dinner 🕯️")
-    submitted = st.form_submit_button("Add to Wishlist 💌")
+    new_item = st.text_input("Add something romantic to the wishlist 💌", placeholder="E.g. Candlelight Dinner 🕯️")
+    submitted = st.form_submit_button("Add to Wishlist 💘")
     if submitted and new_item:
         st.session_state.wishlist.append(new_item)
         st.success("Added to wishlist!")
@@ -63,6 +62,8 @@ with st.form("add_item"):
 if st.session_state.wishlist:
     st.markdown("---")
     st.markdown("### 💞 Your Wishlist Items:")
+    delete_index = None  # Safe deletion tracking
+
     for i, item in enumerate(st.session_state.wishlist):
         cols = st.columns([5, 1, 1])
         with cols[0]:
@@ -73,9 +74,11 @@ if st.session_state.wishlist:
                 st.success("Item updated!")
         with cols[2]:
             if st.button("❌ Delete", key=f"delete_{i}"):
-                st.session_state.wishlist.pop(i)
-                st.experimental_rerun()
+                delete_index = i
 
+    if delete_index is not None:
+        st.session_state.wishlist.pop(delete_index)
+        st.experimental_rerun()
 else:
     st.info("Your wishlist is empty. Add your first dream 💭!")
 
