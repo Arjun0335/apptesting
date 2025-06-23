@@ -83,7 +83,7 @@ if wishlist:
         with cols[1]:
             if st.button("💘 Edit", key=f"edit_btn_{i}"):
                 wishlist[i] = edited
-                save_wishlist(wishlist)
+                #save_wishlist(wishlist)
                 st.success("Item updated!")
                 st.experimental_rerun()
         with cols[2]:
