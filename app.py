@@ -1,14 +1,17 @@
 import streamlit as st
+import os
+from datetime import datetime
 
+# Page setup
 st.set_page_config(page_title="Romantic Wishlist 💖", layout="centered")
 
-PASSWORD = "241106"
+# File to store wishlist items (for persistence across sessions)
+WISHLIST_FILE = "wishlist.txt"
 
-if "authenticated" not in st.session_state:
-    st.session_state.authenticated = False
-
-if "wishlist" not in st.session_state:
-    st.session_state.wishlist = [
+# Functions to load and save wishlist
+def load_wishlist():
+    # Default wishlist if file doesn't exist
+    default_wishlist = [
         "Chandni Chowk ki tikki and ice cream",
         "Ghumna and baatein krna",
         "Love to make me irritate",
@@ -27,28 +30,74 @@ if "wishlist" not in st.session_state:
         "Go to gym and become her cute gym guy and learn bike also",
         "20th June her feet was in pain and mood swings also"
     ]
+    
+    try:
+        if os.path.exists(WISHLIST_FILE):
+            with open(WISHLIST_FILE, "r", encoding="utf-8") as f:
+                items = [line.strip() for line in f.readlines() if line.strip()]
+                return items if items else default_wishlist
+        return default_wishlist
+    except:
+        return default_wishlist
 
-if "rerun_flag" not in st.session_state:
-    st.session_state.rerun_flag = False
+def save_wishlist(wishlist):
+    try:
+        with open(WISHLIST_FILE, "w", encoding="utf-8") as f:
+            for item in wishlist:
+                f.write(item + "\n")
+        return True
+    except:
+        return False
 
-# Login Page
-if not st.session_state.authenticated:
-    st.title("💘 Romantic Wishlist Login")
-    pwd = st.text_input("Enter Password 🔐", type="password")
-    login_clicked = st.button("Login")
-    if login_clicked:
-        if pwd == PASSWORD:
-            st.session_state.authenticated = True
-            st.session_state.rerun_flag = True  # <--- SET FLAG BEFORE STOP
+# Load wishlist
+wishlist = load_wishlist()
+
+# App header with personalized title
+st.title(f"💝 Arjun's Romantic Wishlist 💝")
+st.write(f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+
+# Add new item section
+with st.form("add_item_form"):
+    new_item = st.text_input("Add something romantic 💌")
+    submitted = st.form_submit_button("Add to Wishlist")
+    
+    if submitted and new_item.strip():
+        wishlist.append(new_item.strip())
+        save_success = save_wishlist(wishlist)
+        if save_success:
+            st.success("Item added successfully! ❤️")
         else:
-            st.error("Incorrect Password")
-    # Safe rerun after UI logic
-    if st.session_state.rerun_flag:
-        st.session_state.rerun_flag = False
-        st.experimental_rerun()
-    st.stop()
+            st.session_state["wishlist"] = wishlist  # Fallback to session state
+            st.warning("Added to current session only (file saving failed)")
 
-# Main Page...
-st.title("💝 Our Romantic Wishlist 💝")
+# Display wishlist items
+st.subheader("Our Romantic Wishes 💘")
+for i, item in enumerate(wishlist, 1):
+    st.markdown(f"**{i}.** {item}")
 
-# ... rest of your app as already written ...
+# Footer
+st.markdown("---")
+st.markdown("Made with love 💕")
+
+# Styling
+st.markdown("""
+<style>
+    .stTextInput > div > div > input {
+        background-color: #fff0f5;
+        color: #cc0066;
+        font-weight: bold;
+    }
+    div.stButton > button {
+        background-color: #ff69b4;
+        color: white;
+        border-radius: 8px;
+        font-size: 16px;
+    }
+    h1, h2, h3 {
+        color: #cc0066;
+    }
+    .stMarkdown {
+        font-family: 'Comic Sans MS', cursive, sans-serif;
+    }
+</style>
+""", unsafe_allow_html=True)
