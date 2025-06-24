@@ -4,9 +4,10 @@ st.set_page_config(page_title="Romantic Wishlist 💖", page_icon="💘", layout
 
 PASSWORD = "241106"
 
-# Initialize session state
+# ---- Initialize state ----
 if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
+
 if 'wishlist' not in st.session_state:
     st.session_state.wishlist = [
         "Chandni Chowk ki tikki and ice cream",
@@ -28,52 +29,57 @@ if 'wishlist' not in st.session_state:
         "20th June her feet was in pain and mood swings also"
     ]
 
-# Login interface
+# ---- Password page ----
 if not st.session_state.authenticated:
-    st.markdown("## 💖 Welcome to Our Romantic Wishlist 💑")
+    st.title("💖 Welcome to Our Romantic Wishlist 💑")
     pwd = st.text_input("Enter the secret password 🔐", type="password")
-    if st.button("Submit"):
+    login_btn = st.button("Submit")
+
+    if login_btn:
         if pwd == PASSWORD:
             st.session_state.authenticated = True
-            st.experimental_rerun()
+            st.experimental_set_query_params(auth="yes")  # Optional marker
         else:
-            st.error("❌ Wrong password — try again!")
+            st.error("Wrong password 😢")
     st.stop()
 
-# Main app: shown after login
+# ---- Wishlist Page ----
 st.markdown("<h2 style='color: pink;'>💝 Our Dream Wishlist 💝</h2>", unsafe_allow_html=True)
 
 # Add new item
-with st.form("add"):
-    new_item = st.text_input("Add something romantic 💌")
-    submitted = st.form_submit_button("Add 💘")
-    if submitted:
+with st.form("add_form"):
+    new_item = st.text_input("Add something romantic 💌", placeholder="e.g. Sunset walk 🌇")
+    if st.form_submit_button("Add 💘") and new_item:
         st.session_state.wishlist.append(new_item)
-        st.success("Added!")
-        st.experimental_rerun()
+        st.success("Item added!")
 
-# Display list with edit/delete
-del_index = None
-for i, item in enumerate(st.session_state.wishlist):
-    cols = st.columns([6, 1, 1])
-    with cols[0]:
-        edited = st.text_input(f"{i+1}.", value=item, key=f"edit_{i}")
-    if cols[1].button("✏️", key=f"edit_btn_{i}"):
-        st.session_state.wishlist[i] = edited
-        st.success("Updated!")
-        st.experimental_rerun()
-    if cols[2].button("🗑️", key=f"del_btn_{i}"):
-        del_index = i
+# Show items
+if st.session_state.wishlist:
+    st.markdown("### 💞 Your Wishlist Items:")
+    for i, item in enumerate(st.session_state.wishlist):
+        col1, col2, col3 = st.columns([5, 1, 1])
+        edited_text = col1.text_input(f"Item {i+1}", value=item, key=f"text_{i}")
+        if col2.button("✏️", key=f"edit_{i}"):
+            st.session_state.wishlist[i] = edited_text
+            st.success("Updated!")
+        if col3.button("🗑️", key=f"delete_{i}"):
+            st.session_state.wishlist.pop(i)
+            st.success("Deleted!")
+            break  # Prevent multiple deletions in one run
 
-if del_index is not None:
-    st.session_state.wishlist.pop(del_index)
-    st.success("Deleted!")
-    st.experimental_rerun()
-
-# Style
+# ---- Romantic Styling ----
 st.markdown("""
 <style>
-.stTextInput>div>div>input { background: #ffe6f0; color: #cc0066; font-weight: bold; }
-div.stButton>button { background: #ff99cc; color: white; border-radius:10px; font-size:18px; }
+    .stTextInput > div > div > input {
+        background-color: #ffe6f0;
+        color: #cc0066;
+        font-weight: bold;
+    }
+    div.stButton > button {
+        background-color: #ff99cc;
+        color: white;
+        border-radius: 10px;
+        font-size: 18px;
+    }
 </style>
 """, unsafe_allow_html=True)
