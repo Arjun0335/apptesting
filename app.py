@@ -17,7 +17,6 @@ if not st.session_state.authenticated:
     if password == PASSWORD:
         st.session_state.authenticated = True
         st.success("Welcome to your wishlist!")
-        st.stop()  # 🔁 Proceed to main app after login
     elif password != "":
         st.error("Wrong password! Please try again.")
     st.stop()
