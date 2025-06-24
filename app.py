@@ -54,20 +54,33 @@ with st.form("add_item_form"):
         st.session_state.wishlist.append(new_item.strip())
         st.success("Item added!")
 
-# Display and manage wishlist
-for i in range(len(st.session_state.wishlist)):
+# For editing/updating/deleting, track changes to avoid in-loop mutations
+delete_index = None
+update_index = None
+update_value = None
+
+for i, item in enumerate(st.session_state.wishlist):
     col1, col2, col3 = st.columns([6, 1, 1])
     with col1:
-        updated = st.text_input(f"item_{i}", st.session_state.wishlist[i], key=f"edit_{i}")
+        updated = st.text_input(f"item_{i}", item, key=f"edit_{i}")
     with col2:
-        if st.button("✏️", key=f"save_{i}"):
-            st.session_state.wishlist[i] = updated
-            st.success("Item updated!")
+        if st.button("✏️", key=f"save_{i}") and updated != item:
+            update_index = i
+            update_value = updated
     with col3:
         if st.button("🗑️", key=f"delete_{i}"):
-            st.session_state.wishlist.pop(i)
-            st.experimental_rerun()
-            break
+            delete_index = i
+
+# Process updates and deletes after the loop
+if update_index is not None and update_value is not None:
+    st.session_state.wishlist[update_index] = update_value
+    st.success("Item updated!")
+    st.experimental_rerun()
+
+if delete_index is not None:
+    st.session_state.wishlist.pop(delete_index)
+    st.success("Item deleted!")
+    st.experimental_rerun()
 
 # Styling
 st.markdown("""
