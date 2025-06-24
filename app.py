@@ -20,14 +20,16 @@ if not st.session_state.authenticated:
         st.session_state.authenticated = True
         st.session_state.just_logged_in = True
         st.success("Welcome to your wishlist!")
-        st.experimental_rerun()  # 🚀 safely rerun to exit login screen
+        st.stop()  # wait until rerun
     elif password != "":
         st.error("Wrong password! Please try again.")
     st.stop()
 
-# ✅ Only do this once after login
+# ✅ Force rerun ONCE after successful login
 if st.session_state.just_logged_in:
     st.session_state.just_logged_in = False
+    st.experimental_rerun()
+
 
 
 # ---- Romantic Default Wishlist ----
