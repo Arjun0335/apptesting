@@ -1,6 +1,6 @@
 import streamlit as st
 
-# ---- Romantic Theme Config ----
+# ---- Page Config ----
 st.set_page_config(page_title="Romantic Wishlist 💖", page_icon="💘", layout="centered")
 
 # ---- Password protection ----
@@ -9,19 +9,18 @@ PASSWORD = "241106"
 if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
 
+# ---- Login Logic ----
 if not st.session_state.authenticated:
     st.title("💖 Welcome to Our Romantic Wishlist 💑")
     password = st.text_input("Enter the secret password 🔐", type="password")
-    
+
     if password == PASSWORD:
         st.session_state.authenticated = True
         st.success("Welcome to your wishlist!")
-        st.stop()
+        st.experimental_rerun()  # 🔁 Proceed to main app after login
     elif password != "":
-        st.error("Wrong password! Try again.")
-        st.stop()
-    else:
-        st.stop()
+        st.error("Wrong password! Please try again.")
+    st.stop()
 
 # ---- Romantic Default Wishlist ----
 default_items = [
@@ -44,7 +43,8 @@ default_items = [
     "20th June her feet was in pain and mood swings also"
 ]
 
-if 'wishlist' not in st.session_state:
+# ---- Load Wishlist into Session ----
+if 'wishlist' not in st.session_state or not st.session_state.wishlist:
     st.session_state.wishlist = default_items.copy()
 
 # ---- App Title ----
