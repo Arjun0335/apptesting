@@ -38,11 +38,10 @@ if not st.session_state.authenticated:
     if login_btn:
         if pwd == PASSWORD:
             st.session_state.authenticated = True
-            st.query_params(auth="yes")  # Optional marker
+            st.success("Login successful! 💕 Scroll down ⬇️")
         else:
             st.error("Wrong password 😢")
     st.stop()
-
 # ---- Wishlist Page ----
 st.markdown("<h2 style='color: pink;'>💝 Our Dream Wishlist 💝</h2>", unsafe_allow_html=True)
 
