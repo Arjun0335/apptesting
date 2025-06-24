@@ -1,12 +1,9 @@
 import streamlit as st
 
-# Page setup
 st.set_page_config(page_title="Romantic Wishlist 💖", layout="centered")
 
-# Password Setup
 PASSWORD = "241106"
 
-# Session Initialization
 if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
 
@@ -31,6 +28,9 @@ if "wishlist" not in st.session_state:
         "20th June her feet was in pain and mood swings also"
     ]
 
+if "rerun_flag" not in st.session_state:
+    st.session_state.rerun_flag = False
+
 # Login Page
 if not st.session_state.authenticated:
     st.title("💘 Romantic Wishlist Login")
@@ -38,12 +38,14 @@ if not st.session_state.authenticated:
     if st.button("Login"):
         if pwd == PASSWORD:
             st.session_state.authenticated = True
-            st.experimental_rerun()
+            st.session_state.rerun_flag = True
         else:
             st.error("Incorrect Password")
+    if st.session_state.rerun_flag:
+        st.session_state.rerun_flag = False
+        st.experimental_rerun()
     st.stop()
 
-# Main Page
 st.title("💝 Our Romantic Wishlist 💝")
 
 # Add new item
@@ -52,9 +54,10 @@ with st.form("add_item_form"):
     submitted = st.form_submit_button("Add to Wishlist")
     if submitted and new_item.strip():
         st.session_state.wishlist.append(new_item.strip())
+        st.session_state.rerun_flag = True
         st.success("Item added!")
 
-# For editing/updating/deleting, track changes to avoid in-loop mutations
+# Show and manage wishlist
 delete_index = None
 update_index = None
 update_value = None
@@ -71,15 +74,19 @@ for i, item in enumerate(st.session_state.wishlist):
         if st.button("🗑️", key=f"delete_{i}"):
             delete_index = i
 
-# Process updates and deletes after the loop
 if update_index is not None and update_value is not None:
     st.session_state.wishlist[update_index] = update_value
+    st.session_state.rerun_flag = True
     st.success("Item updated!")
-    st.experimental_rerun()
 
 if delete_index is not None:
     st.session_state.wishlist.pop(delete_index)
+    st.session_state.rerun_flag = True
     st.success("Item deleted!")
+
+# Trigger rerun safely at the very end of your script
+if st.session_state.rerun_flag:
+    st.session_state.rerun_flag = False
     st.experimental_rerun()
 
 # Styling
