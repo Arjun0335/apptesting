@@ -58,7 +58,7 @@ st.write(f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 # Add new item section
 with st.form("add_item_form"):
-    new_item = st.text_input("Add something romantic 💌")
+    new_item = st.text_input("Add your wishlist 💌")
     submitted = st.form_submit_button("Add to Wishlist")
     
     if submitted and new_item.strip():
