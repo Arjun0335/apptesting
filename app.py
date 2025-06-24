@@ -38,7 +38,7 @@ if not st.session_state.authenticated:
     if login_btn:
         if pwd == PASSWORD:
             st.session_state.authenticated = True
-            st.experimental_set_query_params(auth="yes")  # Optional marker
+            st.query_params(auth="yes")  # Optional marker
         else:
             st.error("Wrong password 😢")
     st.stop()
