@@ -1,15 +1,15 @@
 import streamlit as st
 
-# --- Page Settings ---
+# Page config
 st.set_page_config(page_title="Romantic Wishlist 💖", page_icon="💘", layout="centered")
 
-# --- Password ---
+# Password protection
 PASSWORD = "241106"
-
-# --- Session Init ---
-if 'authenticated' not in st.session_state:
+if "authenticated" not in st.session_state:
     st.session_state.authenticated = False
-if 'wishlist' not in st.session_state:
+
+# Initialize default wishlist once
+if "wishlist" not in st.session_state:
     st.session_state.wishlist = [
         "Chandni Chowk ki tikki and ice cream",
         "Ghumna and baatein krna",
@@ -30,61 +30,61 @@ if 'wishlist' not in st.session_state:
         "20th June her feet was in pain and mood swings also"
     ]
 
-# --- Login Screen ---
+# Login Page
 if not st.session_state.authenticated:
-    st.title("💖 Romantic Wishlist 💑")
+    st.title("💘 Romantic Wishlist Login")
     password = st.text_input("Enter the secret password 🔐", type="password")
     if st.button("Login"):
         if password == PASSWORD:
             st.session_state.authenticated = True
-            st.success("Login successful! ❤️")
+            st.success("Login successful! Scroll down 👇")
         else:
-            st.error("Wrong password. Please try again.")
+            st.error("Incorrect password. Please try again.")
     st.stop()
 
-# --- Wishlist Header ---
+# Main Page
 st.markdown("<h2 style='color: pink;'>💝 Our Dream Wishlist 💝</h2>", unsafe_allow_html=True)
 
-# --- Add New Wishlist Item ---
-with st.form("add_form"):
-    new_item = st.text_input("Add something romantic 💌", placeholder="E.g. Watch sunset together 🌇")
-    if st.form_submit_button("Add 💘") and new_item.strip():
+# Add new item
+with st.form("add"):
+    new_item = st.text_input("Add something sweet 💌")
+    if st.form_submit_button("Add to Wishlist 💘") and new_item.strip():
         st.session_state.wishlist.append(new_item.strip())
-        st.success("Added to wishlist!")
+        st.success("Added!")
 
-# --- Show Wishlist ---
+# Show wishlist
 if st.session_state.wishlist:
-    st.markdown("### 💞 Your Wishlist Items:")
     for i, item in enumerate(st.session_state.wishlist):
-        cols = st.columns([5, 1, 1])
+        cols = st.columns([6, 1, 1])
         with cols[0]:
-            edited = st.text_input(f"item_{i}", value=item, label_visibility="collapsed")
+            new_value = st.text_input(f"item_{i}", value=item, label_visibility="collapsed")
         with cols[1]:
             if st.button("✏️", key=f"edit_{i}"):
-                st.session_state.wishlist[i] = edited
+                st.session_state.wishlist[i] = new_value
                 st.success("Item updated!")
         with cols[2]:
-            if st.button("🗑️", key=f"delete_{i}"):
+            if st.button("🗑️", key=f"del_{i}"):
                 st.session_state.wishlist.pop(i)
                 st.success("Item deleted!")
-                st.experimental_rerun()  # safely rerun only here
+                st.experimental_rerun()
                 break
 else:
-    st.info("Your wishlist is empty. Start by adding something romantic! 💌")
+    st.info("No items yet. Add your first dream!")
 
-# --- Romantic Styling ---
+# Romantic theme
 st.markdown("""
 <style>
     .stTextInput > div > div > input {
-        background-color: #ffe6f0;
+        background-color: #fff0f5;
         color: #cc0066;
         font-weight: bold;
     }
     div.stButton > button {
-        background-color: #ff99cc;
+        background-color: #ff69b4;
         color: white;
         border-radius: 10px;
-        font-size: 18px;
+        font-size: 16px;
+        font-weight: bold;
     }
 </style>
 """, unsafe_allow_html=True)
