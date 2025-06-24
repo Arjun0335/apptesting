@@ -9,17 +9,26 @@ PASSWORD = "241106"
 if 'authenticated' not in st.session_state:
     st.session_state.authenticated = False
 
-# ---- Login Logic ----
+if 'just_logged_in' not in st.session_state:
+    st.session_state.just_logged_in = False
+
 if not st.session_state.authenticated:
     st.title("💖 Welcome to Our Romantic Wishlist 💑")
     password = st.text_input("Enter the secret password 🔐", type="password")
 
     if password == PASSWORD:
         st.session_state.authenticated = True
+        st.session_state.just_logged_in = True
         st.success("Welcome to your wishlist!")
+        st.experimental_rerun()  # 🚀 safely rerun to exit login screen
     elif password != "":
         st.error("Wrong password! Please try again.")
     st.stop()
+
+# ✅ Only do this once after login
+if st.session_state.just_logged_in:
+    st.session_state.just_logged_in = False
+
 
 # ---- Romantic Default Wishlist ----
 default_items = [
