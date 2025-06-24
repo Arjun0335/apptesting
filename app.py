@@ -53,7 +53,7 @@ def save_wishlist(wishlist):
 wishlist = load_wishlist()
 
 # App header with personalized title
-st.title(f"💝 Arjun's Romantic Wishlist 💝")
+st.title(f"💝 My Vani's Wishlist 💝")
 st.write(f"Last updated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
 # Add new item section
